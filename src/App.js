@@ -8,6 +8,7 @@ import { signOut } from "firebase/auth";
 import { ThemeProvider } from "@mui/material/styles";
 import { themes } from "./Helpers/Theme";
 import PostDetails from "./pages/PostDetails";
+import Navbar from "./Components/NavBar";
 
 function App() {
   let saveuser = localStorage.getItem("isLoggedin");
@@ -25,35 +26,13 @@ function App() {
     <ThemeProvider theme={themes}>
       <Router>
         <div className="App">
-          <nav>
-            <Link to="/" className="logo">
-              <h3>Bot-Manager</h3>
-            </Link>
-            <ul>
-              <li>
-                <Link to="/" className="navlink">
-                  Home
-                </Link>
-              </li>
-              <li>
-                {!isLogged ? (
-                  <Link to="/login" className="navlink">
-                    Login
-                  </Link>
-                ) : (
-                  <button onClick={signUserOut} className="logoutbtn">
-                    Log Out
-                  </button>
-                )}
-              </li>
-            </ul>
-          </nav>
+          {/* <Navbar isLogged={isLogged} signUserOut={signUserOut} /> */}
           <Routes>
             <Route
               path="/login"
               element={<Login setIsLogged={setIsLogged} />}
             />
-            <Route path="/" exact element={isLogged ? <Home isLogged={isLogged} /> : <Login setIsLogged={setIsLogged} />} />
+            <Route path="/" exact element={isLogged ? <Home isLogged={isLogged} signUserOut={signUserOut} /> : <Login setIsLogged={setIsLogged} />} />
             <Route path="/posts" exact element={<PostDetails />} />
             <Route path="/posts/:id" element={<PostDetails />} />
           </Routes>

@@ -1,0 +1,53 @@
+.navbar {
+    background-color: #1c0b86;
+    /* Exemplo de cor de fundo */
+    padding: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.text {
+    color: #ffffff
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    color: white;
+    /* Cor do texto */
+    text-decoration: none;
+}
+
+.logo h3 {
+    margin-left: 10px;
+}
+
+.nav-list {
+    list-style-type: none;
+    display: flex;
+}
+
+.nav-list li {
+    margin-right: 20px;
+}
+
+.navlink,
+.logoutbtn {
+    color: white;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.logoutbtn {
+    font-size: 1rem;
+}
+
+.escola-icone {
+    width: 30px;
+    /* ou a altura desejada */
+    height: 30px;
+    /* ou a largura desejada */
+    /* margin-right: 10px; */
+}

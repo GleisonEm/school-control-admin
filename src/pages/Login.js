@@ -5,8 +5,9 @@ import { Container, Paper, TextField, Button, Typography } from '@mui/material';
 import styled from '@emotion/styled';
 import { makeStyles } from '@mui/styles';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../services/Auth'; // Importe o serviço Auth.js
+import AuthService from '../services/Auth'; // Importe o serviço Auth.js
 import { themes } from "../Helpers/Theme";
+import Navbar from '../Components/NavBar';
 
 const LoginContainer = styled(Container)`
   display: flex;
@@ -54,25 +55,28 @@ const Login = ({ setIsLogged }) => {
   const [password, setPassword] = useState('');
   let navigate = useNavigate();
 
-  const handleLogin = () => {
-    // Chame o método de login do serviço Auth
-    const isAuthenticated = login(username, password);
-
-    if (isAuthenticated) {
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    try {
+      const data = await AuthService.login(username, password);
+      console.log('Login bem-sucedido:', data);
       localStorage.setItem('isLoggedin', true);
       setIsLogged(true);
       navigate('/');
-    } else {
-      alert('Credenciais inválidas. Tente novamente.');
+      // Redirecione o usuário ou faça outras ações pós-login aqui
+    } catch (error) {
+      console.log(error)
+      alert(error.response?.data?.message || 'Ocorreu um erro ao fazer login.');
     }
   };
 
-  return (
+  return (<>
+    <Navbar />
     <LoginContainer>
       <LoginPaper elevation={3}>
         <Typography variant="h5">Login</Typography>
         <TextField
-          label="Username"
+          label="username"
           variant="outlined"
           fullWidth
           margin="normal"
@@ -80,7 +84,7 @@ const Login = ({ setIsLogged }) => {
           onChange={(e) => setUsername(e.target.value)}
         />
         <TextField
-          label="Password"
+          label="senha"
           type="password"
           variant="outlined"
           fullWidth
@@ -93,6 +97,7 @@ const Login = ({ setIsLogged }) => {
         </Button>
       </LoginPaper>
     </LoginContainer>
+    </>
   );
 };
 

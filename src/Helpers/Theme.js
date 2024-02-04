@@ -3,14 +3,14 @@ import { createTheme } from "@mui/material";
 export const themes = createTheme({
   palette: {
     primary: {
-      main: "#25D366",
+      main: "#1c0b86",
       white: "#ffffff",
       bgColor: "#ffffff7e",
-      darkbtn: "#25D366",
-      maindark: "#0e1217",
-      dark: "#1c1f26",
+      darkbtn: "##fd0505",
+      maindark: "#1c0b86",
+      dark: "#1c0b86",
       greydark: "#b3b3b3",
-      offwhite: "#d4c5c5",
+      offwhite: "#fd0505",
     },
   },
 });
