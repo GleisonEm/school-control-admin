@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import { useState } from "react";
-import { auth } from "./Firebase-config";
-import { signOut } from "firebase/auth";
 import { ThemeProvider } from "@mui/material/styles";
 import { themes } from "./Helpers/Theme";
 import PostDetails from "./pages/PostDetails";
@@ -15,11 +13,9 @@ function App() {
   const [isLogged, setIsLogged] = useState(saveuser);
 
   const signUserOut = () => {
-    signOut(auth).then(() => {
       localStorage.clear();
       setIsLogged(false);
       window.location.pathname = "/login";
-    });
   };
 
   return (

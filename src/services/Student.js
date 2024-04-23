@@ -13,6 +13,29 @@ const StudentService = {
             throw error;
         }
     },
+    delete: async (studentId) => {
+        try {
+            const response = await axios.delete('/students/' + studentId);
+            return {
+                ok: true,
+                data: response.data
+            };
+        } catch (error) {
+            return { ok: false, error: error.response?.data?.message || error.message };
+        }
+    },
+    getAll: async () => {
+        try {
+            const response = await axios.get('/students/all');
+            return {
+                ok: true,
+                data: response.data
+            };
+        } catch (error) {
+            return { ok: false }
+            throw error;
+        }
+    },
 }
 
 export default StudentService

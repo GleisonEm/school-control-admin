@@ -13,9 +13,9 @@ const ClassService = {
             throw error;
         }
     },
-    getAll: async () => {
+    getAll: async (with_shift = false) => {
         try {
-            const response = await axios.get('/classes');
+            const response = await axios.get('/classes?with_shift=' + with_shift);
             return {
                 ok: true,
                 data: response.data
@@ -23,6 +23,17 @@ const ClassService = {
         } catch (error) {
             return { ok: false }
             throw error;
+        }
+    },
+    delete: async (classId) => {
+        try {
+            const response = await axios.delete('/classes/' + classId);
+            return {
+                ok: true,
+                data: response.data
+            };
+        } catch (error) {
+            return { ok: false, error: error.response?.data?.message || error.message };
         }
     },
 }

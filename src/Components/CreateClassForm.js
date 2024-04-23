@@ -1,18 +1,35 @@
-import React, { useState } from 'react';
-import { TextField, Button, Box } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { TextField, Button, Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import ClassService from '../services/Class';// Supondo que você tenha um serviço para lidar com classes
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import ShiftService from '../services/Shift';
 
 const CreateClassForm = () => {
-    const [classDetails, setClassDetails] = useState({
-        class_name: '',
-        academic_year: ''
-    });
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+    const [shifts, setShifts] = useState([]);
+    const [selectedShift, setSelectedShift] = useState('');
+    const [classDetails, setClassDetails] = useState({
+        class_name: '',
+        academic_year: '',
+        shift_id: selectedShift
+    });
+
+    useEffect(() => {
+        const fetchShifts = async () => {
+            try {
+                const response = await ShiftService.getAll(); // Método para obter todos os turnos
+                setShifts(response.data);
+            } catch (error) {
+                console.error('Erro ao buscar turnos:', error);
+            }
+        };
+
+        fetchShifts();
+    }, []);
 
     const handleSnackbarOpen = (message, severity) => {
         setSnackbarMessage(message);
@@ -32,9 +49,15 @@ const CreateClassForm = () => {
     };
 
     const handleSubmit = async (event) => {
+
+        if (selectedShift == '') {
+            handleSnackbarOpen('Por favor, selecione um turno.', 'error');
+            return;
+        }
+
         event.preventDefault();
         try {
-            const response = await ClassService.create(classDetails);
+            const response = await ClassService.create({...classDetails, shift_id: selectedShift});
 
             if (response.ok) {
                 console.log('Resposta do servidor:', response.data);
@@ -64,6 +87,10 @@ const CreateClassForm = () => {
         );
     }
 
+    const handleShiftChange = (event) => {
+        setSelectedShift(event.target.value);
+    };
+
     return (
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }} style={{ marginTop: 100 }}>
             <TextField
@@ -88,6 +115,22 @@ const CreateClassForm = () => {
                 value={classDetails.academic_year}
                 onChange={handleChange}
             />
+            <FormControl fullWidth margin="normal">
+                <InputLabel id="shift-label">Turno</InputLabel>
+                <Select
+                    labelId="shift-label"
+                    id="shift"
+                    name="shift"
+                    value={selectedShift}
+                    label="Turno"
+                    onChange={handleShiftChange}
+                    required
+                >
+                    {shifts.map((shift) => (
+                        <MenuItem key={shift.id} value={shift.id}>{shift.name}</MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
             <Button
                 type="submit"
                 fullWidth

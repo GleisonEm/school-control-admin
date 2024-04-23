@@ -23,15 +23,14 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import MenuIcon from "@mui/icons-material/Menu";
+import HomeIcon from '@mui/icons-material/Home';
 import ClassIcon from '@mui/icons-material/Class';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import SchoolIcon from '@mui/icons-material/School';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { CREATEPOST, GETPOSTS } from "../services/ApiUrl";
-import Card from "../Components/Card";
 import { themes } from "../Helpers/Theme";
-import GroupSelect from "../Components/Groups";
-import MediaUploader from "../Components/MediaUploader";
 import PropTypes from "prop-types";
 import escolaIcone from '../assets/img/logo512.png';
 import Navbar from "../Components/NavBar";
@@ -40,6 +39,14 @@ import CreateStudentForm from "../Components/CreateStundentForm";
 import { School } from "@mui/icons-material";
 import CreateClassForm from "../Components/CreateClassForm";
 import CreateSubjectForm from "../Components/CreateSubjectForm";
+import ReportTable from "../Components/ReportTeacherTable";
+import CreateShiftForm from "../Components/CreateShiftForm";
+import TeacherList from "../Components/TeacherList";
+import StudentList from "../Components/StudentList";
+import ClassList from "../Components/ClassList";
+import ReportStudentTable from "../Components/ReportStudentTable";
+import ReportTeacherTable from "../Components/ReportTeacherTable";
+import CreateAdminForm from "../Components/CreateAdminForm";
 
 const drawerWidth = 240;
 
@@ -75,6 +82,25 @@ const Home = ({ window, isLogged, signUserOut }) => {
             <Divider />
             <List>
                 <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+                    <ListItem disablePadding>
+                        <ListItemButton component={Link} to="/">
+                            <ListItemIcon>
+                                <HomeIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Inicio" />
+                        </ListItemButton>
+                    </ListItem>
+                                        <ListItem key={'createAdminForm'} disablePadding>
+                        <ListItemButton onClick={() => {
+                            handleListItemClick(null)
+                            handleListItemClick('createAdminForm')
+                        }}>
+                            <ListItemIcon>
+                                <PersonAddAlt1Icon />
+                            </ListItemIcon>
+                            <ListItemText primary={'Cadastrar administrativo'} />
+                        </ListItemButton>
+                    </ListItem>
                     <ListItem key={'registerTeacher'} disablePadding>
                         <ListItemButton onClick={() => {
                             handleListItemClick(null)
@@ -97,6 +123,17 @@ const Home = ({ window, isLogged, signUserOut }) => {
                             <ListItemText primary={'Cadastrar Aluno'} />
                         </ListItemButton>
                     </ListItem>
+                    <ListItem key={'registerShift'} disablePadding>
+                        <ListItemButton onClick={() => {
+                            handleListItemClick(null)
+                            handleListItemClick('CreateShiftForm')
+                        }}>
+                            <ListItemIcon>
+                                <ClassIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={'Cadastrar Turno'} />
+                        </ListItemButton>
+                    </ListItem>
                     <ListItem key={'registerClass'} disablePadding>
                         <ListItemButton onClick={() => {
                             handleListItemClick(null)
@@ -108,6 +145,7 @@ const Home = ({ window, isLogged, signUserOut }) => {
                             <ListItemText primary={'Cadastrar Sala de Aula'} />
                         </ListItemButton>
                     </ListItem>
+
                     <ListItem key={'registerSubject'} disablePadding>
                         <ListItemButton onClick={() => {
                             handleListItemClick(null)
@@ -117,6 +155,75 @@ const Home = ({ window, isLogged, signUserOut }) => {
                                 <AutoStoriesIcon />
                             </ListItemIcon>
                             <ListItemText primary={'Cadastrar Matéria'} />
+                        </ListItemButton>
+                    </ListItem>
+
+                    <ListItem key={'viewReportTeacher'} disablePadding>
+                        <ListItemButton onClick={() => {
+                            handleListItemClick(null)
+                            handleListItemClick('viewReportTeacher')
+                        }}>
+                            <ListItemIcon>
+                                <AutoStoriesIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={'Relátorio Professor'} />
+                        </ListItemButton>
+                    </ListItem>
+
+                      <ListItem key={'viewReportStudent'} disablePadding>
+                        <ListItemButton onClick={() => {
+                            handleListItemClick(null)
+                            handleListItemClick('viewReportStudent')
+                        }}>
+                            <ListItemIcon>
+                                <AutoStoriesIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={'Relátorio Alunos'} />
+                        </ListItemButton>
+                    </ListItem>
+
+                    <ListItem key={'teacherList'} disablePadding>
+                        <ListItemButton onClick={() => {
+                            handleListItemClick(null)
+                            handleListItemClick('teacherList')
+                        }}>
+                            <ListItemIcon>
+                                <AutoStoriesIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={'Gerenciar Professores'} />
+                        </ListItemButton>
+                    </ListItem>
+
+                    <ListItem key={'classList'} disablePadding>
+                        <ListItemButton onClick={() => {
+                            handleListItemClick(null)
+                            handleListItemClick('classList')
+                        }}>
+                            <ListItemIcon>
+                                <AutoStoriesIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={'Gerenciar Salas'} />
+                        </ListItemButton>
+                    </ListItem>
+
+                    <ListItem key={'studentList'} disablePadding>
+                        <ListItemButton onClick={() => {
+                            handleListItemClick(null)
+                            handleListItemClick('studentList')
+                        }}>
+                            <ListItemIcon>
+                                <AutoStoriesIcon />
+                            </ListItemIcon>
+                            <ListItemText primary={'Gerenciar Alunos'} />
+                        </ListItemButton>
+                    </ListItem>
+
+                    <ListItem disablePadding>
+                        <ListItemButton onClick={signUserOut}>
+                            <ListItemIcon>
+                                <LogoutIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Sair" />
                         </ListItemButton>
                     </ListItem>
                 </div>
@@ -260,7 +367,7 @@ const Home = ({ window, isLogged, signUserOut }) => {
                 }}
             >
 
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Toolbar>
                         <IconButton
                             color="inherit"
@@ -276,18 +383,6 @@ const Home = ({ window, isLogged, signUserOut }) => {
                         <img src={escolaIcone} alt="Ícone Escola" className="escola-icone" />
                         <h3 className="text">Colegio Modelo - Administrativo</h3>
                     </Link>
-                    <ul className="nav-list">
-                        <li>
-                            <Link to="/" className="navlink">Inicio</Link>
-                        </li>
-                        <li>
-                            {!isLogged ? (
-                                <Link to="/login" className="navlink">Login</Link>
-                            ) : (
-                                <button onClick={signUserOut} className="navlink">Sair</button>
-                            )}
-                        </li>
-                    </ul>
                 </div>
 
             </AppBar>
@@ -327,10 +422,18 @@ const Home = ({ window, isLogged, signUserOut }) => {
                 [classes.contentShift]: mobileOpen,
             })}>
                 {/* Restante do seu componente Home */}
+                {selectedComponent === 'createAdminForm' && <CreateAdminForm />}
                 {selectedComponent === 'CreateTeacherForm' && <CreateTeacherForm />}
                 {selectedComponent === 'CreateStudentForm' && <CreateStudentForm />}
                 {selectedComponent === 'CreateClassForm' && <CreateClassForm />}
                 {selectedComponent === 'CreateSubjectForm' && <CreateSubjectForm />}
+                {selectedComponent === 'CreateShiftForm' && <CreateShiftForm />}
+                {selectedComponent === 'viewReportTeacher' && <ReportTeacherTable />}
+                 {selectedComponent === 'viewReportStudent' && <ReportStudentTable />}
+                {selectedComponent === 'teacherList' && <TeacherList />}
+                {selectedComponent === 'studentList' && <StudentList />}
+                {selectedComponent === 'classList' && <ClassList />}
+
                 {/* ... outros componentes que podem ser renderizados */}
             </main>
             {/* Restante do seu componente Home */}

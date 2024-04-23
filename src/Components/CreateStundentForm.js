@@ -10,8 +10,12 @@ const CreateStudentForm = () => {
     const [student, setStudent] = useState({
         birth_date: '',
         parent_details: '',
+        address: '',
         name: '',
-        classId: ''
+        classId: '',
+        cpf: '',
+        school_grade: '',
+        shift: 'Matutino'
     });
     const [classes, setClasses] = useState([]); // Lista de classes disponíveis
     const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -21,7 +25,7 @@ const CreateStudentForm = () => {
     useEffect(() => {
         const fetchClasses = async () => {
             try {
-                const response = await ClassService.getAll(); // Supondo que esse método retorna todas as classes
+                const response = await ClassService.getAll(true); // Supondo que esse método retorna todas as classes
                 setClasses(response.data);
             } catch (error) {
                 console.error('Erro ao buscar classes:', error);
@@ -45,6 +49,7 @@ const CreateStudentForm = () => {
     };
 
     const handleChange = (event) => {
+        console.log(student);
         setStudent({ ...student, [event.target.name]: event.target.value });
     };
 
@@ -55,7 +60,11 @@ const CreateStudentForm = () => {
                 birth_date: student.birth_date,
                 parent_details: student.parent_details,
                 class_id: student.classId,
-                name: student.name
+                name: student.name,
+                address: student.address,
+                cpf: student.cpf,
+                school_grade: student.school_grade,
+
             });
 
             if (response.ok) {
@@ -69,6 +78,22 @@ const CreateStudentForm = () => {
             console.error('Erro ao enviar os dados:', error);
             handleSnackbarOpen('Erro na rede ou no servidor.', 'error');
         }
+    };
+
+    const handleCPFChange = (event) => {
+        const { value } = event.target;
+
+        let cpf = value.replace(/\D/g, '');
+
+        cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
+        cpf = cpf.replace(/(\d{3})(\d)/, '$1.$2');
+        cpf = cpf.replace(/(\d{3})(\d{1,2})/, '$1-$2');
+        cpf = cpf.substring(0, 14);
+
+        setStudent({
+            ...student,
+            [event.target.name]: cpf,
+        });
     };
 
     if (snackbarOpen) {
@@ -104,6 +129,22 @@ const CreateStudentForm = () => {
                 margin="normal"
                 required
                 fullWidth
+                id="cpf"
+                label="CPF"
+                name="cpf"
+                autoComplete="cpf"
+                autoFocus
+                value={student.cpf}
+                onChange={handleCPFChange}
+                inputProps={{
+                    maxLength: 14
+                }}
+                placeholder="000.000.000-00"
+            />
+            <TextField
+                margin="normal"
+                required
+                fullWidth
                 id="birth_date"
                 label="Data de Nascimento"
                 name="birth_date"
@@ -118,16 +159,43 @@ const CreateStudentForm = () => {
                 margin="normal"
                 required
                 fullWidth
-                id="parent_details"
-                label="Detalhes dos Pais"
-                name="parent_details"
-                autoComplete="parent_details"
+                id="address"
+                label="Endereço"
+                name="address"
+                autoComplete="address"
                 multiline
                 rows={4}
-                value={student.parent_details}
+                value={student.address}
                 onChange={handleChange}
             />
-            <FormControl fullWidth margin="normal">
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="school_grade"
+                label="Série"
+                name="school_grade"
+                autoComplete="school_grade"
+                autoFocus
+                value={student.school_grade}
+                onChange={handleChange}
+            />
+            {/* <FormControl fullWidth margin="normal" required>
+                <InputLabel id="shift-label">Turno</InputLabel>
+                <Select
+                    labelId="shift-label"
+                    id="shift"
+                    name="shift"
+                    value={student.shift}
+                    label="Turno"
+                    onChange={handleChange}
+                >
+                    <MenuItem value="Matutino">Matutino</MenuItem>
+                    <MenuItem value="Vespertino">Vespertino</MenuItem>
+                    <MenuItem value="Noturno">Noturno</MenuItem>
+                </Select>
+            </FormControl> */}
+            <FormControl fullWidth margin="normal" required>
                 <InputLabel id="class-label">Classe</InputLabel>
                 <Select
                     labelId="class-label"
@@ -139,7 +207,7 @@ const CreateStudentForm = () => {
                 >
                     {classes.map((classItem) => (
                         <MenuItem key={classItem.id} value={classItem.id}>
-                            {classItem.class_name}
+                            {classItem.class_name} - {classItem.shift_name}
                         </MenuItem>
                     ))}
                 </Select>

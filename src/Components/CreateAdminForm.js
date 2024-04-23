@@ -1,25 +1,20 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box, Divider, Typography } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import TeacherService from '../services/Teacher';
+import AuthService from '../services/Auth'; // Importar o serviço para criar usuários
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import PasswordInput from './PasswordInput';
 
-
-
-const CreateTeacherForm = () => {
+const CreateAdminForm = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [teacher, setTeacher] = useState({
+    const [admin, setAdmin] = useState({
         name: '',
         email: '',
-        qualifications: '',
         username: '',
         cpf: '',
-        password: password,
-        rg: '',
-        code: ''
+        rg: ''
     });
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -38,9 +33,8 @@ const CreateTeacherForm = () => {
         setSnackbarOpen(false);
     };
 
-
     const handleChange = (event) => {
-        setTeacher({ ...teacher, [event.target.name]: event.target.value });
+        setAdmin({ ...admin, [event.target.name]: event.target.value });
     };
 
     const handleCPFChange = (event) => {
@@ -53,16 +47,15 @@ const CreateTeacherForm = () => {
         cpf = cpf.replace(/(\d{3})(\d{1,2})/, '$1-$2');
         cpf = cpf.substring(0, 14);
 
-        setTeacher({
-            ...teacher,
+        setAdmin({
+            ...admin,
             [event.target.name]: cpf,
         });
     };
 
     const handleRGChange = (event) => {
-        // Atualiza o estado
-        setTeacher({
-            ...teacher,
+        setAdmin({
+            ...admin,
             [event.target.name]: event.target.value
         });
     }
@@ -70,20 +63,19 @@ const CreateTeacherForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await TeacherService.create({
-                name: teacher.name,
-                email: teacher.email,
-                qualifications: teacher.qualifications,
-                username: teacher.username,
-                cpf: teacher.cpf,
-                password: password,
-                rg: teacher.rg,
-                code: teacher.code
+            const response = await AuthService.create({ // Alterar para a função que cria administradores
+                name: admin.name,
+                email: admin.email,
+                username: admin.username,
+                cpf: admin.cpf,
+                rg: admin.rg,
+                password: password, // A senha é tratada separadamente
+                type: 'diretoria' // Definir o tipo como "diretoria" para administradores
             });
 
             if (response.ok) {
                 console.log('Resposta do servidor:', response.data);
-                handleSnackbarOpen('Professor cadastrado com sucesso!', 'success');
+                handleSnackbarOpen('Administrador cadastrado com sucesso!', 'success');
             } else {
                 console.error('Erro ao enviar os dados:', response.status);
                 handleSnackbarOpen(response.error, 'error');
@@ -106,11 +98,8 @@ const CreateTeacherForm = () => {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
-
         )
-
     }
-
 
     return (
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }} style={{ marginTop: 100 }}>
@@ -126,22 +115,10 @@ const CreateTeacherForm = () => {
                 name="username"
                 autoComplete="username"
                 autoFocus
-                value={teacher.username}
+                value={admin.username}
                 onChange={handleChange}
             />
             <PasswordInput setPassword={setPassword} setConfirmPassword={setConfirmPassword} confirmPassword={confirmPassword} password={password} />
-            <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="code"
-                label="Cadastro Professor"
-                name="code"
-                autoComplete="code"
-                autoFocus
-                value={teacher.code}
-                onChange={handleChange}
-            />
             <Divider style={{ margin: '20px 0' }} />
 
             <Typography variant="h6" gutterBottom>
@@ -156,7 +133,7 @@ const CreateTeacherForm = () => {
                 name="cpf"
                 autoComplete="cpf"
                 autoFocus
-                value={teacher.cpf} // assumindo que o CPF está sendo armazenado na propriedade `cpf` do objeto `teacher`
+                value={admin.cpf}
                 onChange={handleCPFChange}
                 inputProps={{
                     maxLength: 14
@@ -172,7 +149,7 @@ const CreateTeacherForm = () => {
                 name="rg"
                 autoComplete="rg"
                 autoFocus
-                value={teacher.rg} // assumindo que o CPF está sendo armazenado na propriedade `cpf` do objeto `teacher`
+                value={admin.rg}
                 onChange={handleRGChange}
                 placeholder="0.000.000"
             />
@@ -185,7 +162,7 @@ const CreateTeacherForm = () => {
                 name="name"
                 autoComplete="name"
                 autoFocus
-                value={teacher.name}
+                value={admin.name}
                 onChange={handleChange}
             />
             <TextField
@@ -197,20 +174,7 @@ const CreateTeacherForm = () => {
                 name="email"
                 type='email'
                 autoComplete="email"
-                value={teacher.email}
-                onChange={handleChange}
-            />
-            <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="qualifications"
-                label="Disciplinas"
-                name="qualifications"
-                autoComplete="qualifications"
-                multiline
-                rows={4}
-                value={teacher.qualifications}
+                value={admin.email}
                 onChange={handleChange}
             />
             <Button
@@ -220,10 +184,10 @@ const CreateTeacherForm = () => {
                 endIcon={<SendIcon />}
                 sx={{ mt: 3, mb: 2 }}
             >
-                Cadastrar Professor
+                Cadastrar Administrador
             </Button>
         </Box>
     );
 };
 
-export default CreateTeacherForm;
+export default CreateAdminForm;

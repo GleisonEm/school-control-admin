@@ -3,11 +3,7 @@ import { makeStyles, styled } from "@mui/styles";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CREATEPOST, GETPOSTS } from "../services/ApiUrl";
-import Card from "../Components/Card";
 import { themes } from "../Helpers/Theme";
-import GroupSelect from "../Components/Groups";
-import MediaUploader from "../Components/MediaUploader";
 import ResponsiveDrawer from "../Components/Drawer";
 
 const Initial = ({ isLogged }) => {
